@@ -10,6 +10,7 @@ permissions:
   actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
   checks: write        # Required to add status summary.
   pull-requests: write # Required to add PR comment.
+  id-token: write
 env:
   ENVIRONMENT: prod
   AWS_REGION: us-east-1
