@@ -23,6 +23,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: hashicorp/setup-terraform@v4.0.1
+        # with:
+        #   terraform_version: "1.14.6"
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
