@@ -1,5 +1,42 @@
+data "aws_caller_identity" "current" {}
+
+resource "aws_kms_key" "k8s_secrets" {
+  description              = "K8s secrets encryption key"
+  enable_key_rotation      = true
+  deletion_window_in_days  = 10
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+}
+
+resource "aws_kms_key_policy" "k8s_secrets_policy" {
+  key_id = aws_kms_key.k8s_secrets.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "key-default-1"
+    Statement = [
+      {
+        Sid    = "Enable IAM User Permissions"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        },
+        Action   = "kms:*"
+        Resource = "*"
+      }
+    ]
+  }) ##overly permissive due to proj
+}
+
 resource "aws_eks_cluster" "main" {
   name = var.cluster_name
+
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+  encryption_config {
+    resources = ["secrets"]
+    provider {
+      key_arn = aws_kms_key.k8s_secrets.arn
+    }
+  }
 
   access_config {
     authentication_mode = "API"
@@ -11,7 +48,7 @@ resource "aws_eks_cluster" "main" {
   version  = var.eks_version
 
   vpc_config {
-    subnet_ids                = var.private_subnet_ids
+    subnet_ids = var.private_subnet_ids
   }
   # Ensure that IAM Role permissions are created before and deleted
   # after EKS Cluster handling. Otherwise, EKS will not be able to
@@ -158,7 +195,7 @@ resource "aws_iam_role_policy_attachment" "ec2_pods_custom" {
 }
 
 resource "aws_eks_fargate_profile" "kube-system" {
-  depends_on             = [ aws_eks_cluster.main ]
+  depends_on             = [aws_eks_cluster.main]
   cluster_name           = var.cluster_name
   fargate_profile_name   = "kube-system"
   pod_execution_role_arn = aws_iam_role.fargate_pods.arn
@@ -195,10 +232,10 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
 }
 
 resource "aws_eks_addon" "metrics-server" {
-  depends_on               = [aws_eks_fargate_profile.kube-system]
-  cluster_name             = aws_eks_cluster.main.name
-  addon_name               = "metrics-server"
-  addon_version            = "v0.9.0-eksbuild.6" ##Parameterise after
+  depends_on    = [aws_eks_fargate_profile.kube-system]
+  cluster_name  = aws_eks_cluster.main.name
+  addon_name    = "metrics-server"
+  addon_version = "v0.9.0-eksbuild.6" ##Parameterise after
 }
 
 

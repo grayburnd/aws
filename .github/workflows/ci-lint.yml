@@ -1,0 +1,97 @@
+name: CI [Lint]
+
+on:
+  pull_request:
+
+permissions:
+  contents: read # for actions/checkout to fetch code
+  security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+  actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+  checks: write        # Required to add status summary.
+  pull-requests: write # Required to add PR comment.
+  id-token: write
+env:
+  ENVIRONMENT: prod
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: "632988741882"
+
+jobs:
+  ci-lint-and-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Checkov GitHub Action
+        uses: bridgecrewio/checkov-action@v12.1347.0
+        with:
+          # This will add both a CLI output to the console and create a results.sarif file
+          # output_format: cli,sarif
+          # output_file_path: console,results.sarif
+          output_format: cli
+          quiet: true # optional: display only failed checks
+          skip_check: CKV_AWS_39,CKV_AWS_38,CKV_AWS_124,CKV_AWS_19,CKV_AWS_144,CKV_AWS_18,CKV_AWS_21,CKV_AWS_145,CKV2_AWS_5,CKV2_AWS_11,CKV2_AWS_12,CKV2_AWS_6,CKV2_AWS_19,CKV_AWS_27
+          #CKV_AWS_39 = No private VPC Access as part of project
+          #CKV_AWS_38 = No private VPC Access as part of project
+          #CKV_AWS_124 = Overkill for project
+          #CKV_AWS_19 = All Buckets are encrypted at rest by default. Custom CMK not needed for project.
+          #CKV_AWS_144 = Overkill for project
+          #CKV_AWS_18 = Overkill for project
+          #CKV_AWS_21 = Overkill for project
+          #CKV_AWS_145 = Overkill for project
+          #CKV2_AWS_5 = Karpenter SG is utilized in GitOps pipelines, thus associated at a later stage and not orphaned.
+          #CKV2_AWS_11 = Overkill for project
+          #CKV2_AWS_12 = Overkill for project
+          #CKV2_AWS_6 = S3 Buckets have block public access by default
+          #CKV2_AWS_19 = EIP is associated to a NATGW, not an EC2. This is fine...
+          #CKV_AWS_27 = SqsManagedSseEnabled: true so thus it is encrypted by default. No CMK needed due to scope of proj.
+      # - name: Upload SARIF file
+      #   uses: github/codeql-action/upload-sarif@v2
+        
+      #   # Results are generated only on a success or failure
+      #   # this is required since GitHub by default won't run the next step
+      #   # when the previous one has failed. Security checks that do not pass will 'fail'.
+      #   # An alternative is to add `continue-on-error: true` to the previous step
+      #   # Or 'soft_fail: true' to checkov.
+      #   if: success() || failure()
+      #   with:
+      #     sarif_file: results.sarif
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false --var-file=envs/${{ env.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
+
+      # Consistently named after the PR feature branch's latest commit
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          path: ${{ github.event.pull_request.head.sha }}.tfplan
+          archive: false
+
