@@ -27,14 +27,14 @@ jobs:
         # with:
         #   terraform_version: "1.14.6"
 
-      - name: Terraform Init
-        id: init
-        run: terraform init -input=false
-
       - uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
 
       - name: Download tfplan from separate workflow
         uses: dawidd6/action-download-artifact@v24
