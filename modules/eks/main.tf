@@ -1,14 +1,14 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "k8s_secrets" {
-  description             = "K8s secrets encryption key"
-  enable_key_rotation     = true
-  deletion_window_in_days = 10
+  description              = "K8s secrets encryption key"
+  enable_key_rotation      = true
+  deletion_window_in_days  = 10
   customer_master_key_spec = SYMMETRIC_DEFAULT
 }
 
 resource "aws_kms_key_policy" "k8s_secrets_policy" {
-  key_id = aws_kms_key.example.id
+  key_id = aws_kms_key.k8s_secrets.id
   policy = jsonencode({
     Version = "2012-10-17"
     Id      = "key-default-1"
