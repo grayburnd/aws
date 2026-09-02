@@ -4,7 +4,7 @@ resource "aws_kms_key" "k8s_secrets" {
   description              = "K8s secrets encryption key"
   enable_key_rotation      = true
   deletion_window_in_days  = 10
-  customer_master_key_spec = SYMMETRIC_DEFAULT
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
 }
 
 resource "aws_kms_key_policy" "k8s_secrets_policy" {
