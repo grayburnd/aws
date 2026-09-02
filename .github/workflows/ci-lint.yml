@@ -2,7 +2,6 @@ name: CI [Lint]
 
 on:
   pull_request:
-    types: [opened, synchronize]
 
 permissions:
   contents: read # for actions/checkout to fetch code
@@ -51,23 +50,24 @@ jobs:
         run: terraform validate -no-color
 
       - name: Checkov GitHub Action
-        uses: bridgecrewio/checkov-action@v12
+        uses: bridgecrewio/checkov-action@v12.1347.0
         with:
           # This will add both a CLI output to the console and create a results.sarif file
-          output_format: cli,sarif
-          output_file_path: console,results.sarif
+          # output_format: cli,sarif
+          # output_file_path: console,results.sarif
+          output_format: cli
         
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
+      # - name: Upload SARIF file
+      #   uses: github/codeql-action/upload-sarif@v2
         
-        # Results are generated only on a success or failure
-        # this is required since GitHub by default won't run the next step
-        # when the previous one has failed. Security checks that do not pass will 'fail'.
-        # An alternative is to add `continue-on-error: true` to the previous step
-        # Or 'soft_fail: true' to checkov.
-        if: success() || failure()
-        with:
-          sarif_file: results.sarif
+      #   # Results are generated only on a success or failure
+      #   # this is required since GitHub by default won't run the next step
+      #   # when the previous one has failed. Security checks that do not pass will 'fail'.
+      #   # An alternative is to add `continue-on-error: true` to the previous step
+      #   # Or 'soft_fail: true' to checkov.
+      #   if: success() || failure()
+      #   with:
+      #     sarif_file: results.sarif
 
       - name: Terraform Plan
         id: plan
