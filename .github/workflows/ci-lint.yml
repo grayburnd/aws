@@ -1,0 +1,74 @@
+name: CI [Lint]
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  contents: read # for actions/checkout to fetch code
+  security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+  actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+  checks: write        # Required to add status summary.
+  pull-requests: write # Required to add PR comment.
+env:
+  ENVIRONMENT: prod
+
+jobs:
+  ci-lint-and-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - name: Terraform Init
+        id: init
+        run: terraform init -input=false
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Checkov GitHub Action
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          # This will add both a CLI output to the console and create a results.sarif file
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
+        
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        
+        # Results are generated only on a success or failure
+        # this is required since GitHub by default won't run the next step
+        # when the previous one has failed. Security checks that do not pass will 'fail'.
+        # An alternative is to add `continue-on-error: true` to the previous step
+        # Or 'soft_fail: true' to checkov.
+        if: success() || failure()
+        with:
+          sarif_file: results.sarif
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color -input=false --var-file=envs/${{ env.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
+
+      # Consistently named after the PR feature branch's latest commit
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          path: ${{ github.event.pull_request.head.sha }}.tfplan
+          archive: false
+
