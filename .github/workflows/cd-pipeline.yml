@@ -45,4 +45,4 @@ jobs:
       
       - name: TF Apply Plan File
         run: |
-          terraform apply ${{ github.event.pull_request.head.sha }}.tfplan -input=false
+          terraform apply -input=false ${{ github.event.pull_request.head.sha }}.tfplan
