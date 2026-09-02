@@ -28,9 +28,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
 
-      - uses: hashicorp/setup-terraform@v4
-        with:
-          terraform_version: "1.14.6"
+      - uses: hashicorp/setup-terraform@v4.0.1
+        # with:
+        #   terraform_version: "1.14.6"
 
       - uses: gitleaks/gitleaks-action@v3
         env:
