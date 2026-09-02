@@ -34,3 +34,7 @@ jobs:
           workflow: ci-lint.yml # Name of the workflow file where it was uploaded
           name: ${{ github.event.pull_request.head.sha }}.tfplan
           workflow_conclusion: success
+      
+      - name: TF Apply Plan File
+        run: |
+          terraform apply ${{ github.event.pull_request.head.sha }}.tfplan -input=false
