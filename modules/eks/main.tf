@@ -11,7 +11,7 @@ resource "aws_eks_cluster" "main" {
   version  = var.eks_version
 
   vpc_config {
-    subnet_ids                = var.private_subnet_ids
+    subnet_ids = var.private_subnet_ids
   }
   # Ensure that IAM Role permissions are created before and deleted
   # after EKS Cluster handling. Otherwise, EKS will not be able to
@@ -158,7 +158,7 @@ resource "aws_iam_role_policy_attachment" "ec2_pods_custom" {
 }
 
 resource "aws_eks_fargate_profile" "kube-system" {
-  depends_on             = [ aws_eks_cluster.main ]
+  depends_on             = [aws_eks_cluster.main]
   cluster_name           = var.cluster_name
   fargate_profile_name   = "kube-system"
   pod_execution_role_arn = aws_iam_role.fargate_pods.arn
@@ -195,10 +195,10 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
 }
 
 resource "aws_eks_addon" "metrics-server" {
-  depends_on               = [aws_eks_fargate_profile.kube-system]
-  cluster_name             = aws_eks_cluster.main.name
-  addon_name               = "metrics-server"
-  addon_version            = "v0.9.0-eksbuild.6" ##Parameterise after
+  depends_on    = [aws_eks_fargate_profile.kube-system]
+  cluster_name  = aws_eks_cluster.main.name
+  addon_name    = "metrics-server"
+  addon_version = "v0.9.0-eksbuild.6" ##Parameterise after
 }
 
 
