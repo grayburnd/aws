@@ -27,7 +27,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
 
-      - name: Upload Plan Artifact
-        uses: actions/download-artifact@v8.0.1
+      - name: Download tfplan from separate workflow
+        uses: dawidd6/action-download-artifact@v24
         with:
+          workflow: ci-lint.yml # Name of the workflow file where it was uploaded
           name: ${{ github.event.pull_request.head.sha }}.tfplan
+          workflow_conclusion: success
