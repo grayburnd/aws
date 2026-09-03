@@ -68,12 +68,6 @@ resource "aws_vpc_security_group_ingress_rule" "cluster_ingress" {
   ip_protocol       = -1
 }
 
-resource "aws_vpc_security_group_egress_rule" "cluster_egress" {
-  security_group_id = data.aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # semantically equivalent to all ports
-}
-
 resource "aws_iam_openid_connect_provider" "eks" {
   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
 
