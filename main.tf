@@ -32,6 +32,7 @@ module "eks" {
   addon_ebs_cni_version            = var.addon_ebs_cni_version
   vpc_cni_irsa_role_arn            = module.irsa_vpc_cni.irsa-role-arn
   aws-ebs-csi-driver_irsa_role_arn = module.irsa_aws-ebs-csi-driver.irsa-role-arn
+  amazon-cloudwatch-observability_irsa_role_arn = module.irsa_amazon-cloudwatch-observability.irsa-role-arn
   environment                      = var.environment
   platform_namespace               = var.platform_namespace
   fargate_pods_policies            = var.fargate_pods_policies
@@ -86,6 +87,24 @@ module "irsa_eso_operator" {
   irsa_role_prefix      = "eso_operator"
 }
 
+module "irsa_karpenter_controller" {
+  source                = "./modules/irsa"
+  iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
+  k8s_service_account   = var.karpenter_k8s_service_account
+  k8s_namespace         = "kube-system"
+  irsa_iam_policy_list  = module.karpenter.irsa_iam_policy_list
+  irsa_role_prefix      = "karpenter_controller"
+}
+
+module "irsa_amazon-cloudwatch-observability" {
+  source                = "./modules/irsa"
+  iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
+  k8s_service_account   = var.amazon-cloudwatch-observability_k8s_service_account
+  k8s_namespace         = "kube-system"
+  irsa_iam_policy_name  = var.amazon-cloudwatch-observability_irsa_iam_policy_name
+  irsa_role_prefix      = "amazon-cloudwatch-observability"
+}
+
 module "frontend_prod_voting_vote" {
   source                = "./modules/irsa"
   iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
@@ -124,15 +143,6 @@ module "karpenter" {
   karpenter_cloudformation_file_name = var.karpenter_cloudformation_file_name
   vpc_id                             = module.vpc.vpc_id
   vpc_cidr                           = module.vpc.vpc_cidr
-}
-
-module "irsa_karpenter_controller" {
-  source                = "./modules/irsa"
-  iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
-  k8s_service_account   = var.karpenter_k8s_service_account
-  k8s_namespace         = "kube-system"
-  irsa_iam_policy_list  = module.karpenter.irsa_iam_policy_list
-  irsa_role_prefix      = "karpenter_controller"
 }
 
 resource "null_resource" "eks_kubeconfig_update" {

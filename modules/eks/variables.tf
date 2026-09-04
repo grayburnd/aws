@@ -42,6 +42,10 @@ variable "aws-ebs-csi-driver_irsa_role_arn" {
   type = string
 }
 
+variable "amazon-cloudwatch-observability_irsa_role_arn" {
+  type = string
+}
+
 variable "vpc_cni_irsa_role_arn" {
   type = string
 }

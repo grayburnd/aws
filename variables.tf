@@ -183,3 +183,11 @@ variable "karpenter_cloudformation_file_name" {
 variable "karpenter_k8s_service_account" {
   type = string
 }
+
+variable "amazon-cloudwatch-observability_k8s_service_account" {
+  type = string
+}
+
+variable "amazon-cloudwatch-observability_irsa_iam_policy_name" {
+  type = string
+}
