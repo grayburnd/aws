@@ -135,19 +135,19 @@ module "irsa_karpenter_controller" {
   irsa_role_prefix      = "karpenter_controller"
 }
 
-# resource "null_resource" "eks_kubeconfig_update" {
-#   depends_on = [module.eks.eks_cluster_name]
-#   provisioner "local-exec" {
-#     command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name}"
-#   }
-# }
+resource "null_resource" "eks_kubeconfig_update" {
+  depends_on = [module.eks.eks_cluster_name]
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name}"
+  }
+}
 
-# resource "null_resource" "coredns_rollout_restart" {
-#   depends_on = [module.eks.aws_eks_fargate_profile_id, null_resource.eks_kubeconfig_update]
-#   provisioner "local-exec" {
-#     command = "kubectl rollout restart -n kube-system deployments/coredns"
-#   }
-# }
+resource "null_resource" "coredns_rollout_restart" {
+  depends_on = [module.eks.aws_eks_fargate_profile_id, null_resource.eks_kubeconfig_update]
+  provisioner "local-exec" {
+    command = "kubectl rollout restart -n kube-system deployments/coredns"
+  }
+}
 
 # resource "null_resource" "bootstrap_k8s" {
 #   depends_on = [ module.eks ]
