@@ -225,6 +225,17 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
   service_account_role_arn = var.aws-ebs-csi-driver_irsa_role_arn
 }
 
+resource "aws_eks_addon" "amazon-cloudwatch-observability" {
+  depends_on               = [aws_eks_fargate_profile.kube-system]
+  cluster_name             = aws_eks_cluster.main.name
+  addon_name               = "amazon-cloudwatch-observability"
+  addon_version            = "v6.6.0-eksbuild.1"
+  service_account_role_arn = var.amazon-cloudwatch-observability_irsa_role_arn
+  namespace_config {
+    namespace = "kube-system"
+  }
+}
+
 resource "aws_eks_addon" "metrics-server" {
   depends_on    = [aws_eks_fargate_profile.kube-system]
   cluster_name  = aws_eks_cluster.main.name

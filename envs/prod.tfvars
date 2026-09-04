@@ -14,7 +14,7 @@ cluster_admin_principal_arn   = "arn:aws:iam::AWS_ACCOUNT_ID_REDACTED:user/admin
 eks_admin_access_policies     = ["arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy", "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"]
 addon_vpc_cni_version         = "v1.22.3-eksbuild.1"
 addon_ebs_cni_version         = "v1.63.1-eksbuild.1"
-fargate_pods_policies         = ["AmazonEKSFargatePodExecutionRolePolicy", "AmazonEKSWorkerNodePolicy", "AmazonElasticContainerRegistryPublicReadOnly"]
+fargate_pods_policies         = ["AmazonEKSFargatePodExecutionRolePolicy", "AmazonEKSWorkerNodePolicy", "AmazonElasticContainerRegistryPublicReadOnly", "CloudWatchLogsFullAccess"]
 ec2_pods_policies             = ["AmazonEKSWorkerNodePolicy", "AmazonElasticContainerRegistryPublicReadOnly", "AmazonSSMManagedInstanceCore"]
 cluster_name                  = "main-eks-cluster"
 
@@ -54,3 +54,6 @@ fargate_profile_candidates = ["aws-load-balancer-controller", "redis-operator", 
 karpenter_cloudformation_file_name = "karpenter-cloudformation.yaml"
 
 karpenter_k8s_service_account = "karpenter-controller-sa"
+
+amazon-cloudwatch-observability_k8s_service_account = "cloudwatch-agent"
+amazon-cloudwatch-observability_irsa_iam_policy_name ="arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
