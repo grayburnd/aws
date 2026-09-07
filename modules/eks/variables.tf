@@ -6,18 +6,6 @@ variable "eks_version" {
   type = string
 }
 
-variable "nodegroup_desired_count" {
-  type = number
-}
-
-variable "nodegroup_min_count" {
-  type = number
-}
-
-variable "nodegroup_max_count" {
-  type = number
-}
-
 variable "cluster_admin_principal_arn" {
   type = string
 }
@@ -42,15 +30,11 @@ variable "aws-ebs-csi-driver_irsa_role_arn" {
   type = string
 }
 
+variable "amazon-cloudwatch-observability_irsa_role_arn" {
+  type = string
+}
+
 variable "vpc_cni_irsa_role_arn" {
-  type = string
-}
-
-variable "platform_namespace" {
-  type = string
-}
-
-variable "environment" {
   type = string
 }
 
@@ -63,10 +47,6 @@ variable "ec2_pods_policies" {
 }
 
 variable "vpc_cidr" {
-  type = string
-}
-
-variable "vpc_id" {
   type = string
 }
 
