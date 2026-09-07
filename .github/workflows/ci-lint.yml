@@ -19,16 +19,19 @@ jobs:
   ci-lint-and-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout local Git Repo
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: aws-actions/configure-aws-credentials@v6
+      - name: Assume IAM Role via OIDC
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
 
-      - uses: hashicorp/setup-terraform@v4.0.1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4.0.1
         with:
           terraform_version: "~1.16.1"
 
@@ -41,15 +44,15 @@ jobs:
         run: terraform fmt -check
         continue-on-error: true
 
-      - name: Terraform Init
+      - name: Terraform init
         id: init
         run: terraform init -input=false
 
-      - name: Terraform Validate
+      - name: Terraform validate
         id: validate
         run: terraform validate -no-color
 
-      - name: Checkov GitHub Action
+      - name: (Checkov) Terraform Security Scan
         uses: bridgecrewio/checkov-action@v12.1347.0
         with:
           # This will add both a CLI output to the console and create a results.sarif file
@@ -84,14 +87,14 @@ jobs:
       #   with:
       #     sarif_file: results.sarif
 
-      - name: Terraform Plan
+      - name: Terraform plan
         id: plan
         run: terraform plan -no-color -input=false --var-file=envs/${{ env.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
 
       # Consistently named after the PR feature branch's latest commit
-      - name: Upload Plan Artifact
+      - name: Upload plan Artifact
         uses: actions/upload-artifact@v7.0.1
         with:
           path: ${{ github.event.pull_request.head.sha }}.tfplan
-          archive: false
+          archive: false ##Single file non-archived
 
