@@ -23,9 +23,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: hashicorp/setup-terraform@v4.0.1
+      - uses: azure/setup-kubectl@v5.1.0
         # with:
-        #   terraform_version: "1.14.6"
+        #   version: '<version>' # default is latest stable
+
+      - uses: hashicorp/setup-terraform@v4.0.1
 
       - uses: aws-actions/configure-aws-credentials@v6
         with:
