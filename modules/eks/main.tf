@@ -68,12 +68,6 @@ resource "aws_vpc_security_group_ingress_rule" "cluster_ingress" {
   ip_protocol       = -1
 }
 
-resource "aws_vpc_security_group_egress_rule" "cluster_egress" {
-  security_group_id = data.aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # semantically equivalent to all ports
-}
-
 resource "aws_iam_openid_connect_provider" "eks" {
   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
 
@@ -229,6 +223,17 @@ resource "aws_eks_addon" "aws-ebs-csi-driver" {
   addon_name               = "aws-ebs-csi-driver"
   addon_version            = var.addon_ebs_cni_version ##Parameterise after
   service_account_role_arn = var.aws-ebs-csi-driver_irsa_role_arn
+}
+
+resource "aws_eks_addon" "amazon-cloudwatch-observability" {
+  depends_on               = [aws_eks_fargate_profile.kube-system]
+  cluster_name             = aws_eks_cluster.main.name
+  addon_name               = "amazon-cloudwatch-observability"
+  addon_version            = "v6.6.0-eksbuild.1"
+  service_account_role_arn = var.amazon-cloudwatch-observability_irsa_role_arn
+  namespace_config {
+    namespace = "kube-system"
+  }
 }
 
 resource "aws_eks_addon" "metrics-server" {

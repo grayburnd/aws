@@ -24,7 +24,7 @@ resource "aws_iam_role" "irsa-role" {
 
 resource "aws_iam_policy" "irsa-policy" {
   count  = endswith(var.irsa_iam_policy_name, ".json") ? 1 : 0
-  policy = file("${path.root}/templates/${var.irsa_iam_policy_name}")
+  policy = file("${path.root}/templates/iam/${var.irsa_iam_policy_name}")
 }
 
 resource "aws_iam_role_policy_attachment" "irsa-policy" {

@@ -1,5 +1,3 @@
-data "aws_caller_identity" "current" {}
-
 resource "aws_vpc" "main" {
   ipv4_ipam_pool_id   = var.ipam_pool_id
   ipv4_netmask_length = var.vpc_netmask
