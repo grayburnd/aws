@@ -19,34 +19,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v7
+      - name: Checkout local Git Repo
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: azure/setup-kubectl@v5.1.0
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v5.1.0
         # with:
         #   version: '<version>' # default is latest stable
 
-      - uses: hashicorp/setup-terraform@v4.0.1
-        with:
-          terraform_version: "~1.16.1"
-
-      - uses: aws-actions/configure-aws-credentials@v6
+      - name: Assume IAM Role via OIDC
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: "~1.16.1"
 
       - name: Terraform Init
         id: init
         run: terraform init -input=false
 
-      - name: Download tfplan from separate workflow
+      - name: Download Terraform Plan from PR
         uses: dawidd6/action-download-artifact@v24
         with:
           workflow: ci-lint.yml # Name of the workflow file where it was uploaded
           name: ${{ github.event.pull_request.head.sha }}.tfplan
           workflow_conclusion: success
       
-      - name: TF Apply Plan File
+      - name: Terraform apply 
         run: |
           terraform apply -input=false ${{ github.event.pull_request.head.sha }}.tfplan
