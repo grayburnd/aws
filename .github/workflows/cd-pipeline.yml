@@ -28,6 +28,8 @@ jobs:
         #   version: '<version>' # default is latest stable
 
       - uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: "~1.16.1"
 
       - uses: aws-actions/configure-aws-credentials@v6
         with:
