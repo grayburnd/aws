@@ -1,7 +1,7 @@
 resource "aws_cloudformation_stack" "karpenter" {
   name          = "karpenter-stack"
   capabilities  = ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
-  template_body = file("${path.root}/templates/${var.karpenter_cloudformation_file_name}")
+  template_body = file("${path.root}/templates/cloudformation/${var.karpenter_cloudformation_file_name}")
   parameters = {
     ClusterName = var.cluster_name
   }
