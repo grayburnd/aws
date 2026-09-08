@@ -152,3 +152,15 @@ variable "amazon-cloudwatch-observability_irsa_iam_policy_name" {
 variable "karpenter_cloudformation_file_name" {
   type = string
 }
+
+variable "argocd_chart_version" {
+  type = string
+}
+
+variable "argocd_namespace" {
+  type = string
+}
+
+variable "namespace_list" {
+  type = list(string)
+}
