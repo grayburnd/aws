@@ -41,6 +41,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: grayburnd/aws-values
+          ref: 'main'
           path: tf-values
 
       - name: Setup Terraform
