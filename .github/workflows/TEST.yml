@@ -10,4 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - run: |
-            echo '${{ toJson(vars) }}'
+            echo '${{ toJSON(vars) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"' >> $GITHUB_ENV
+        - run: |
+            env
