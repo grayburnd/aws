@@ -148,6 +148,9 @@ module "karpenter" {
 #Update kubeconfig for the subsequent coredns rollout restart to successfully run
 resource "null_resource" "eks_kubeconfig_update" {
   depends_on = [module.eks.eks_cluster_name]
+  triggers = {
+    always_run = timestamp()
+  }
   provisioner "local-exec" {
     command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name}"
   }
