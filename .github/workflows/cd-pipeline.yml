@@ -16,11 +16,12 @@ jobs:
   ##Only deploy if the PR was merged to Main. Single branch only.
   deploy:
     if: github.event.pull_request.merged == true
+    environment: prod
     runs-on: ubuntu-latest
     steps:
 
       - name: Checkout local Git Repo
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
