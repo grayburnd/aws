@@ -29,6 +29,20 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/gh_actions
 
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          # required
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout TF values repo
+        uses: actions/checkout@v7
+        with:
+          repository: grayburnd/aws-values
+          path: tf-values
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
         with:
@@ -88,7 +102,7 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -no-color -input=false --var-file=envs/${{ vars.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
+        run: terraform plan -no-color -input=false --var-file=tf-values/${{ vars.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
 
       # Consistently named after the PR feature branch's latest commit
       - name: Upload plan Artifact
