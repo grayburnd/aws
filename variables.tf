@@ -29,6 +29,10 @@ variable "cluster_admin_principal_arn" {
   type = string
 }
 
+variable "github_oidc_principal_arn" {
+  type = string
+}
+
 variable "eks_admin_access_policies" {
   type = list(string)
 }
