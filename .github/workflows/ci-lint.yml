@@ -44,9 +44,6 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           ref: 'main'
           path: tf-values
-      - run: |
-          ls tf-values/
-          pwd
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
@@ -112,7 +109,10 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -no-color -input=false --var-file=tf-values/${{ vars.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
+        run: |
+          pwd 
+          ls 
+          terraform plan -no-color -input=false --var-file=tf-values/${{ vars.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
 
       # Consistently named after the PR feature branch's latest commit
       - name: Upload plan Artifact
