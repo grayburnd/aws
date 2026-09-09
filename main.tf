@@ -20,6 +20,7 @@ module "eks" {
   private_subnet_ids                            = module.vpc.private_subnet_ids
   eks_version                                   = var.eks_version
   cluster_admin_principal_arn                   = var.cluster_admin_principal_arn
+  github_oidc_principal_arn                   = var.github_oidc_principal_arn
   eks_admin_access_policies                     = var.eks_admin_access_policies
   addon_vpc_cni_version                         = var.addon_vpc_cni_version
   addon_ebs_cni_version                         = var.addon_ebs_cni_version

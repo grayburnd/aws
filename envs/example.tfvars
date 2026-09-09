@@ -4,6 +4,7 @@ vpc_netmask                                   = 20
 opted_availability_zones                      = ["a", "b"]
 eks_version                                   = "1.36"
 cluster_admin_principal_arn                   = "arn:aws:iam::123456789123:user/admin"
+github_oidc_principal_arn                     = "arn:aws:iam::123456789123:role/gh_actions"
 eks_admin_access_policies                     = ["arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy", "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"]
 addon_vpc_cni_version                         = "v1.22.3-eksbuild.1"
 addon_ebs_cni_version                         = "v1.63.1-eksbuild.1"

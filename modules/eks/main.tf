@@ -120,6 +120,23 @@ resource "aws_eks_access_policy_association" "eks_admin" {
   }
 }
 
+resource "aws_eks_access_entry" "github_actions" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.github_oidc_principal_arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "github_actions" {
+  for_each      = toset(var.eks_admin_access_policies)
+  cluster_name  = aws_eks_cluster.main.name
+  policy_arn    = each.value
+  principal_arn = var.github_oidc_principal_arn
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
 ##https://github.com/aws/karpenter-provider-aws/issues/5369
 resource "aws_eks_access_entry" "karpenter_node" {
   cluster_name  = aws_eks_cluster.main.name
