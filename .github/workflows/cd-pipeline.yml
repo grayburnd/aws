@@ -56,6 +56,6 @@ jobs:
           name: ${{ github.event.pull_request.head.sha }}.tfplan
           workflow_conclusion: success
       
-      # - name: Terraform apply 
-      #   run: |
-      #     terraform apply -input=false ${{ github.event.pull_request.head.sha }}.tfplan
+      - name: Terraform apply 
+        run: |
+          terraform apply -input=false ${{ github.event.pull_request.head.sha }}.tfplan
