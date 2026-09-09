@@ -13,7 +13,6 @@ jobs:
             DICT='${{ toJson(vars) }}'
             echo $DICT
             QUERY=$(${DICT} | jq -r 'to_entries[] | "\(.key)=\(.value)"')
-            echo ${QUERY}
             # for var in $QUERY; do
             #   echo "${var}";
             # done
