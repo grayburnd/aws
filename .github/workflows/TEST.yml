@@ -13,6 +13,8 @@ jobs:
             cat <<EOF > example.json
             ${{ toJson(vars) }}
             EOF
-            for var in $(cat example.json | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do echo $var; done
+            for var in $(cat example.json | jq -r 'to_entries[] | "\(.key)=\(.value)" | "\(.[0:6])\(.[6:index("=")] | ascii_downcase)\(.[index("="):])"'); 
+              do echo $var; 
+            done
         - run: |
             env
