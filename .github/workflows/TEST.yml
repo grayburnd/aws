@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - run: |
-            echo ${{ toJson(vars) }} > example.json
+            echo "${{ toJson(vars) }}" > example.json
             for var in $(cat example.json | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do echo $var; done
         - run: |
             env
