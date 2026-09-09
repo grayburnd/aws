@@ -110,9 +110,6 @@ jobs:
       - name: Terraform plan
         id: plan
         run: |
-          pwd 
-          ls tf-values/
-          cat tf-values/${{ vars.ENVIRONMENT }}.tfvars
           terraform plan -no-color -input=false --var-file=tf-values/${{ vars.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
 
       # Consistently named after the PR feature branch's latest commit
