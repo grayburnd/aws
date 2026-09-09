@@ -54,7 +54,3 @@ karpenter_k8s_service_account = "karpenter-controller-sa"
 
 amazon-cloudwatch-observability_k8s_service_account  = "cloudwatch-agent"
 amazon-cloudwatch-observability_irsa_iam_policy_name = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-
-argocd_chart_version = "10.3.0"
-namespace_list = ["kube-system", "frontend-prod", "backend-prod", "data-prod", "platform-prod", "aws-observability"]
-argocd_namespace = "kube-system"

@@ -37,18 +37,18 @@ module "eks" {
 module "irsa_aws-load-balancer-controller" {
   source                = "./modules/irsa"
   iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
-  k8s_service_account   = var.aws-load-balancer-controller_k8s_service_account
+  k8s_service_account   = var.aws_load_balancer_controller_k8s_service_account
   k8s_namespace         = "kube-system"
-  irsa_iam_policy_name  = var.aws-load-balancer-controller_irsa_iam_policy_name
+  irsa_iam_policy_name  = var.aws_load_balancer_controller_irsa_iam_policy_name
   irsa_role_prefix      = "aws-load-balancer-controller"
 }
 
 module "irsa_aws-ebs-csi-driver" {
   source                = "./modules/irsa"
   iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
-  k8s_service_account   = var.aws-ebs-csi-driver_k8s_service_account
+  k8s_service_account   = var.aws_ebs_csi_driver_k8s_service_account
   k8s_namespace         = "kube-system"
-  irsa_iam_policy_name  = var.aws-ebs-csi-driver_irsa_iam_policy_name
+  irsa_iam_policy_name  = var.aws_ebs_csi_driver_irsa_iam_policy_name
   irsa_role_prefix      = "aws-ebs-csi-driver"
 }
 
@@ -91,9 +91,9 @@ module "irsa_karpenter_controller" {
 module "irsa_amazon-cloudwatch-observability" {
   source                = "./modules/irsa"
   iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
-  k8s_service_account   = var.amazon-cloudwatch-observability_k8s_service_account
+  k8s_service_account   = var.amazon_cloudwatch_observability_k8s_service_account
   k8s_namespace         = "kube-system"
-  irsa_iam_policy_name  = var.amazon-cloudwatch-observability_irsa_iam_policy_name
+  irsa_iam_policy_name  = var.amazon_cloudwatch_observability_irsa_iam_policy_name
   irsa_role_prefix      = "amazon-cloudwatch-observability"
 }
 
