@@ -11,10 +11,6 @@ jobs:
     steps:
         - run: |
             DICT='${{ toJson(vars) }}'
-            echo $DICT
-            QUERY=$(${DICT} | jq -r 'to_entries[] | "\(.key)=\(.value)"')
-            # for var in $QUERY; do
-            #   echo "${var}";
-            # done
+            for var in $(${DICT} | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do echo $var; done
         - run: |
             env
