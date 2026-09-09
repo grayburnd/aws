@@ -13,8 +13,9 @@ jobs:
             cat <<EOF > example.json
             ${{ toJson(vars) }}
             EOF
-            for var in $(cat example.json | jq -r 'to_entries[] | "\(.key)=\(.value)" | "\(.[0:6])\(.[6:index("=")] | ascii_downcase)\(.[index("="):])"'); 
-              do echo $var; 
+            # lowercase everything after the TF_VAR_ prefix in each key, then export key=value
+            for var in $(cat example.json | jq -r 'to_entries[] | "\(.key[0:7])\(.key[7:] | ascii_downcase)=\(.value)"');
+              do echo "$var" >> "$GITHUB_ENV";
             done
         - run: |
             env
