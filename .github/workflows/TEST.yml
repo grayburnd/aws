@@ -9,13 +9,11 @@ jobs:
       deployment: false #need environment vars/secrets but isn't actually deploying anything
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            cat <<EOF > example.json
-            ${{ toJson(vars) }}
-            EOF
-            # lowercase everything after the TF_VAR_ prefix in each key, then export key=value
-            # (uses the multiline-safe GITHUB_ENV heredoc format since some values contain newlines)
-            jq -c 'to_entries[] | {key: (.key[0:7] + (.key[7:] | ascii_downcase)), value: .value}' example.json |
+        - env:
+            VARS_JSON: ${{ toJson(vars) }}
+          run: |
+            # only TF_VAR_ keys get their suffix lowercased, to match tf var names; other vars pass through unchanged
+            jq -c 'to_entries[] | {key: (if (.key | startswith("TF_VAR_")) then "TF_VAR_" + (.key[7:] | ascii_downcase) else .key end), value: .value}' <<< "$VARS_JSON" |
             while IFS= read -r entry; do
               key=$(jq -r '.key' <<< "$entry")
               value=$(jq -r '.value' <<< "$entry")
