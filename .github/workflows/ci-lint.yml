@@ -10,13 +10,12 @@ permissions:
   checks: write        # Required to add status summary.
   pull-requests: write # Required to add PR comment.
   id-token: write
-env:
-  ENVIRONMENT: prod
-  AWS_REGION: us-east-1
-  AWS_ACCOUNT_ID: "632988741882"
 
 jobs:
   ci-lint-and-checks:
+    environment: 
+      name: prod
+      deployment: false #need environment vars/secrets but isn't actually deploying anything
     runs-on: ubuntu-latest
     steps:
       - name: Checkout local Git Repo
@@ -27,15 +26,15 @@ jobs:
       - name: Assume IAM Role via OIDC
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/gh_actions
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
         with:
           terraform_version: "~1.16.1"
 
-      - uses: gitleaks/gitleaks-action@v3
+      - uses: gitleaks/gitleaks-action@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -89,7 +88,7 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: terraform plan -no-color -input=false --var-file=envs/${{ env.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
+        run: terraform plan -no-color -input=false --var-file=envs/${{ vars.ENVIRONMENT }}.tfvars -out=${{ github.event.pull_request.head.sha }}.tfplan
 
       # Consistently named after the PR feature branch's latest commit
       - name: Upload plan Artifact
