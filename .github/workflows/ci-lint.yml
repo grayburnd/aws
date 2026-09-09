@@ -45,7 +45,7 @@ jobs:
           ref: 'main'
           path: tf-values
       - run: |
-          ls
+          ls tf-values/
           pwd
 
       - name: Setup Terraform
