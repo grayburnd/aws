@@ -229,7 +229,7 @@ resource "aws_eks_addon" "amazon-cloudwatch-observability" {
   depends_on               = [aws_eks_fargate_profile.kube-system]
   cluster_name             = aws_eks_cluster.main.name
   addon_name               = "amazon-cloudwatch-observability"
-  addon_version            = "v6.6.0-eksbuild.1"
+  addon_version            = var.addon_amazon_cloudwatch_observability_version
   service_account_role_arn = var.amazon-cloudwatch-observability_irsa_role_arn
   namespace_config {
     namespace = "kube-system"
@@ -240,7 +240,7 @@ resource "aws_eks_addon" "metrics-server" {
   depends_on    = [aws_eks_fargate_profile.kube-system]
   cluster_name  = aws_eks_cluster.main.name
   addon_name    = "metrics-server"
-  addon_version = "v0.9.0-eksbuild.6" ##Parameterise after
+  addon_version = var.addon_metrics_server_version ##Parameterise after
 }
 
 

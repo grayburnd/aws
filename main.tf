@@ -30,6 +30,9 @@ module "eks" {
   ec2_pods_policies                             = var.ec2_pods_policies
   vpc_cidr                                      = module.vpc.vpc_cidr
   karpenter_node_role_arn                       = module.karpenter.karpenter_node_role_arn
+  addon_amazon_cloudwatch_observability_version = var.addon_amazon_cloudwatch_observability_version
+  addon_metrics_server_version                  = var.addon_metrics_server_version
+
 }
 
 ######
