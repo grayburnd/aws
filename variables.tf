@@ -41,6 +41,14 @@ variable "addon_ebs_cni_version" {
   type = string
 }
 
+variable "addon_amazon_cloudwatch_observability_version" {
+  type = string
+}
+
+variable "addon_metrics_server_version" {
+  type = string
+}
+
 variable "fargate_pods_policies" {
   type = list(string)
 }
