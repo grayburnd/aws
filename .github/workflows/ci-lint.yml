@@ -40,7 +40,8 @@ jobs:
       - name: Checkout TF values repo
         uses: actions/checkout@v7.0.1
         with:
-          repository: aws-values
+          repository: grayburnd/aws-values
+          token: ${{ steps.app-token.outputs.token }}
           ref: 'main'
           path: tf-values
 
