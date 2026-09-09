@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - run: |
-            DICT=${{ toJSON(vars) }}
-            QUERY=$(${DICT} | jq -r 'to_entries[] | "\(.key)=\(.value)"')
-            echo ${QUERY}
+            DICT=${{ fromJson(vars) }}
+            # QUERY=$(${DICT} | jq -r 'to_entries[] | "\(.key)=\(.value)"')
+            # echo ${QUERY}
             # for var in $QUERY; do
             #   echo "${var}";
             # done
