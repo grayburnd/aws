@@ -1,0 +1,13 @@
+name: Test
+
+on: workflow_dispatch
+
+jobs:
+  test:
+    environment: 
+      name: prod
+      deployment: false #need environment vars/secrets but isn't actually deploying anything
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo '${{ toJson(vars) }}'

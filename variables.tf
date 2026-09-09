@@ -49,19 +49,19 @@ variable "ec2_pods_policies" {
   type = list(string)
 }
 
-variable "aws-load-balancer-controller_k8s_service_account" {
+variable "aws_load_balancer_controller_k8s_service_account" {
   type = string
 }
 
-variable "aws-load-balancer-controller_irsa_iam_policy_name" {
+variable "aws_load_balancer_controller_irsa_iam_policy_name" {
   type = string
 }
 
-variable "aws-ebs-csi-driver_k8s_service_account" {
+variable "aws_ebs_csi_driver_k8s_service_account" {
   type = string
 }
 
-variable "aws-ebs-csi-driver_irsa_iam_policy_name" {
+variable "aws_ebs_csi_driver_irsa_iam_policy_name" {
   type = string
 }
 
@@ -138,11 +138,11 @@ variable "karpenter_k8s_service_account" {
 #Note: Karpenter uses iam policies output from the TF-managed Karpenter bootstrap CFN Stack
 
 #https://docs.aws.amazon.com/eks/latest/userguide/workloads-add-ons-available-eks.html#amazon-cloudwatch-observability
-variable "amazon-cloudwatch-observability_k8s_service_account" {
+variable "amazon_cloudwatch_observability_k8s_service_account" {
   type = string
 }
 
-variable "amazon-cloudwatch-observability_irsa_iam_policy_name" {
+variable "amazon_cloudwatch_observability_irsa_iam_policy_name" {
   type = string
 }
 
@@ -151,4 +151,16 @@ variable "amazon-cloudwatch-observability_irsa_iam_policy_name" {
 
 variable "karpenter_cloudformation_file_name" {
   type = string
+}
+
+variable "argocd_chart_version" {
+  type = string
+}
+
+variable "argocd_namespace" {
+  type = string
+}
+
+variable "namespace_list" {
+  type = list(string)
 }
