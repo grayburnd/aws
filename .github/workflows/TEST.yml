@@ -14,8 +14,17 @@ jobs:
             ${{ toJson(vars) }}
             EOF
             # lowercase everything after the TF_VAR_ prefix in each key, then export key=value
-            for var in $(cat example.json | jq -r 'to_entries[] | "\(.key[0:7])\(.key[7:] | ascii_downcase)=\(.value)"');
-              do echo "$var" >> "$GITHUB_ENV";
+            # (uses the multiline-safe GITHUB_ENV heredoc format since some values contain newlines)
+            jq -c 'to_entries[] | {key: (.key[0:7] + (.key[7:] | ascii_downcase)), value: .value}' example.json |
+            while IFS= read -r entry; do
+              key=$(jq -r '.key' <<< "$entry")
+              value=$(jq -r '.value' <<< "$entry")
+              delim="GHA_EOF_$(date +%s%N)_$RANDOM"
+              {
+                echo "${key}<<${delim}"
+                echo "${value}"
+                echo "${delim}"
+              } >> "$GITHUB_ENV"
             done
         - run: |
             env
