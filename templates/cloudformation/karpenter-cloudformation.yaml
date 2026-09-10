@@ -462,21 +462,3 @@ Resources:
       Targets:
         - Id: KarpenterInterruptionQueueTarget
           Arn: !GetAtt KarpenterInterruptionQueue.Arn
-
-##CUSTOM EDIT
-Outputs:
-  IAMIntegrationPolicyARN:
-    Value: !Ref IAMIntegrationPolicy
-  IAMEKSIntegrationPolicyARN:
-    Value: !Ref EKSIntegrationPolicy
-  IAMInterruptionPolicyARN:
-    Value: !Ref InterruptionPolicy
-  IAMZonalShiftPolicyARN:
-    Value: !Ref ZonalShiftPolicy
-  IAMResourceDiscoveryPolicyARN:
-    Value: !Ref ResourceDiscoveryPolicy
-  IAMNodeLifecyclePolicyARN:
-    Value: !Ref NodeLifecyclePolicy
-  KarpenterNodeRoleARN:
-    Value: !GetAtt KarpenterNodeRole.Arn
-##CUSTOM EDIT
