@@ -264,8 +264,3 @@ resource "helm_release" "argocd" {
     EOF
   ]
 }
-
-import {
-  id  = "kube-system/argocd"
-  to = helm_release.argocd
-}
