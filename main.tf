@@ -30,7 +30,7 @@ module "eks" {
   fargate_pods_policies                         = var.fargate_pods_policies
   ec2_pods_policies                             = var.ec2_pods_policies
   vpc_cidr                                      = module.vpc.vpc_cidr
-  karpenter_node_role_arn                       = module.karpenter.karpenter_node_role_arn
+  karpenter_node_role_arn                       = local.karpenter_node_role_arn
   addon_amazon_cloudwatch_observability_version = var.addon_amazon_cloudwatch_observability_version
   addon_metrics_server_version                  = var.addon_metrics_server_version
 
@@ -88,7 +88,7 @@ module "irsa_karpenter_controller" {
   iam_oidc_provider_arn = module.eks.iam_oidc_provider_arn
   k8s_service_account   = var.karpenter_k8s_service_account
   k8s_namespace         = "kube-system"
-  irsa_iam_policy_list  = module.karpenter.irsa_iam_policy_list
+  irsa_iam_policy_list  = local.karpenter_irsa_iam_policy_arns_list
   irsa_role_prefix      = "karpenter_controller"
 }
 
