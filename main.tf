@@ -154,7 +154,7 @@ resource "null_resource" "eks_kubeconfig_update" {
 }
 
 #Restart the coredns auto-add-on in order for it to run on the created Fargate Profile for the kube-system namespace /
-#https://github.com/hashicorp/terraform-provider-aws/issues/39156
+#https://github.com/hashicorp/terraform-provider-aws/issues/39156.
 resource "null_resource" "coredns_rollout_restart" {
   depends_on = [module.eks.aws_eks_fargate_profile_id, null_resource.eks_kubeconfig_update]
   provisioner "local-exec" {
