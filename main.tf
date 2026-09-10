@@ -148,9 +148,6 @@ module "karpenter" {
 #Update kubeconfig for the subsequent coredns rollout restart to successfully run
 resource "null_resource" "eks_kubeconfig_update" {
   depends_on = [module.eks.eks_cluster_name]
-  triggers = {
-    always_run = timestamp() ##Run always in case kube needs to be interacted with
-  }
   provisioner "local-exec" {
     command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name}"
   }
@@ -160,6 +157,9 @@ resource "null_resource" "eks_kubeconfig_update" {
 #https://github.com/hashicorp/terraform-provider-aws/issues/39156
 resource "null_resource" "coredns_rollout_restart" {
   depends_on = [module.eks.aws_eks_fargate_profile_id, null_resource.eks_kubeconfig_update]
+  triggers = {
+    always_run = timestamp() ##Run always in case kube needs to be interacted with
+  }
   provisioner "local-exec" {
     command = "kubectl rollout restart -n kube-system deployments/coredns"
   }
@@ -178,7 +178,7 @@ resource "kubernetes_namespace_v1" "namespace_" {
 }
 
 resource "helm_release" "argocd" {
-  depends_on = [kubernetes_namespace_v1.namespace_["argocd"]]
+  depends_on = [kubernetes_namespace_v1.namespace_]
   name       = "argocd" ##Change
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
@@ -266,4 +266,9 @@ resource "helm_release" "argocd" {
                 periodSeconds: 60
     EOF
   ]
+}
+
+import {
+  id  = "kube-system/argocd"
+  to = helm_release.argocd
 }
