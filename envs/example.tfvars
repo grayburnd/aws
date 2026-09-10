@@ -14,7 +14,7 @@ fargate_pods_policies                         = ["AmazonEKSFargatePodExecutionRo
 ec2_pods_policies                             = ["AmazonEKSWorkerNodePolicy", "AmazonElasticContainerRegistryPublicReadOnly", "AmazonSSMManagedInstanceCore"]
 cluster_name                                  = "main-eks-cluster"
 
-aws_load_balancer_controller_k8s_service_account  = "aws_load_balancer_controller-sa"
+aws_load_balancer_controller_k8s_service_account  = "aws-load-balancer-controller-sa"
 aws_load_balancer_controller_irsa_iam_policy_name = "lbc-policy.json"
 
 aws_ebs_csi_driver_k8s_service_account  = "ebs-csi-controller-sa"
