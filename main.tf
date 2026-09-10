@@ -149,7 +149,7 @@ module "karpenter" {
 resource "null_resource" "eks_kubeconfig_update" {
   depends_on = [module.eks.eks_cluster_name]
   triggers = {
-    always_run = timestamp()
+    always_run = timestamp() ##Run always in case kube needs to be interacted with
   }
   provisioner "local-exec" {
     command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${var.cluster_name}"
