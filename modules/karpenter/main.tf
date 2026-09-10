@@ -5,6 +5,9 @@ resource "aws_cloudformation_stack" "karpenter" {
   parameters = {
     ClusterName = var.cluster_name
   }
+  lifecycle { 
+    ignore_changes = [template_body] 
+    }
 }
 
 resource "aws_security_group" "karpenter_pods" {
