@@ -157,9 +157,6 @@ resource "null_resource" "eks_kubeconfig_update" {
 #https://github.com/hashicorp/terraform-provider-aws/issues/39156
 resource "null_resource" "coredns_rollout_restart" {
   depends_on = [module.eks.aws_eks_fargate_profile_id, null_resource.eks_kubeconfig_update]
-  triggers = {
-    always_run = timestamp() ##Run always in case kube needs to be interacted with
-  }
   provisioner "local-exec" {
     command = "kubectl rollout restart -n kube-system deployments/coredns"
   }
