@@ -9,9 +9,6 @@ permissions:
   contents: read
   id-token: write
   actions: read
-env:
-  AWS_REGION: us-east-1
-  AWS_ACCOUNT_ID: "632988741882"
 jobs:
   ##Only deploy if the PR was merged to Main. Single branch only.
   deploy:
@@ -33,8 +30,8 @@ jobs:
       - name: Assume IAM Role via OIDC
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/gh_actions
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/gh_actions
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
